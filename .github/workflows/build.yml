@@ -1,9 +1,11 @@
+
 name: Build Focus APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
@@ -17,10 +19,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Check Android SDK
+        run: |
+          echo "Android SDK:"
+          echo $ANDROID_HOME
+          ls $ANDROID_HOME
 
       - name: Build APK
         run: |
@@ -33,5 +38,5 @@ jobs:
         with:
           name: Focus-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-
-
+          if-no-files-found: error
+          
