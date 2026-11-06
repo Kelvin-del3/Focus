@@ -25,15 +25,17 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Build web app
-        run: npm run build --if-present
+      - name: Verify web files
+        run: |
+          test -f www/index.html
+          echo "Arquivos web encontrados!"
 
-      - name: Sync Capacitor Android
+      - name: Sync Capacitor
         run: npx cap sync android
 
       - name: Build APK
