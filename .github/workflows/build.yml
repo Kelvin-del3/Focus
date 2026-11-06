@@ -15,17 +15,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Check Android SDK
-        run: |
-          echo "Android SDK:"
-          echo $ANDROID_HOME
-          ls $ANDROID_HOME
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web app
+        run: npm run build --if-present
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Build APK
         run: |
@@ -39,4 +48,3 @@ jobs:
           name: Focus-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          
