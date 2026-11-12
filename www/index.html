@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<title>Código Secreto</title>
+
+<style>
+:root {
+    --bg: #080d18;
+    --panel: #111a2b;
+    --panel2: #172338;
+    --line: #293852;
+    --text: #edf4ff;
+    --muted: #91a2bd;
+    --blue: #4d8dff;
+    --green: #35d39a;
+    --yellow: #ffc857;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% -10%, #1a3156, #0b1323 42%, var(--bg) 75%);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+    padding: 22px 14px;
+}
+
+.container {
+    width: min(720px, 100%);
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin: 8px 0 22px;
+}
+
+.badge {
+    display: inline-block;
+    border: 1px solid #31517e;
+    background: #142743;
+    color: #9fc4ff;
+    border-radius: 30px;
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+}
+
+h1 {
+    font-size: clamp(30px, 8vw, 46px);
+    margin: 12px 0 4px;
+}
+
+.subtitle {
+    color: var(--muted);
+}
+
+.card {
+    background: linear-gradient(145deg, #142034, #0d1626);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+}
+
+.stat small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 23px;
+    margin-top: 3px;
+}
+
+.label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 9px;
+}
+
+select, input {
+    width: 100%;
+    background: #0b1424;
+    color: var(--text);
+    border: 1px solid #354965;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 16px;
+    outline: none;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+}
+
+.row > * {
+    flex: 1;
+}
+
+button {
+    border: 0;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.primary {
+    background: linear-gradient(135deg, #438cff, #2864d8);
+    color: white;
+}
+
+.secondary {
+    background: #22324b;
+    color: white;
+}
+
+button:disabled {
+    opacity: .4;
+}
+
+.setup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.setup .full {
+    grid-column: 1/-1;
+}
+
+.game {
+    display: none;
+}
+
+.game.active {
+    display: block;
+}
+
+.secret {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 18px 0;
+}
+
+.secret span {
+    width: 48px;
+    height: 55px;
+    border: 1px solid #354965;
+    background: #0b1424;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    font-weight: 800;
+    color: #8bb7ff;
+}
+
+.feedback {
+    padding: 12px;
+    border-radius: 12px;
+    background: #0c1728;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+.dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.green { background: var(--green); }
+.yellow { background: var(--yellow); }
+
+.history {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+.attempt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #0c1728;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 11px 13px;
+}
+
+.numbers {
+    font-weight: 800;
+    letter-spacing: 5px;
+    font-size: 18px;
+}
+
+.clues {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.clue {
+    font-size: 11px;
+    padding: 5px 8px;
+    border-radius: 20px;
+    background: #1e2c42;
+}
+
+.clue.g {
+    color: #8bf0c6;
+    background: #12372f;
+}
+
+.clue.y {
+    color: #ffe09a;
+    background: #40351b;
+}
+
+.message {
+    text-align: center;
+    padding: 18px 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    color: #64758f;
+    font-size: 12px;
+    padding: 10px;
+}
+
+@media(max-width:480px) {
+    .card {
+        padding: 16px;
+    }
+
+    .setup {
+        grid-template-columns: 1fr;
+    }
+
+    .setup .full {
+        grid-column: auto;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+
+    .secret span {
+        width: 43px;
+        height: 50px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <span class="badge">DESAFIO DE RACIOCÍNIO</span>
+    <h1>🔐 CÓDIGO SECRETO</h1>
+    <p class="subtitle">
+        Descobre a combinação. Usa as pistas. Pensa antes de tentar.
+    </p>
+</header>
+
+<section class="card" id="setupCard">
+
+    <div class="setup">
+
+        <div>
+            <label class="label">Nível de dificuldade</label>
+
+            <select id="difficulty">
+                <option value="easy">Fácil — 3 dígitos / 10 tentativas</option>
+                <option value="medium" selected>Médio — 4 dígitos / 8 tentativas</option>
+                <option value="hard">Difícil — 5 dígitos / 7 tentativas</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="label">Cronómetro</label>
+
+            <select id="timerMode">
+                <option value="0">Sem limite</option>
+                <option value="120">2 minutos</option>
+                <option value="60">1 minuto</option>
+            </select>
+        </div>
+
+        <button class="primary full" id="startBtn">
+            INICIAR DESAFIO
+        </button>
+
+    </div>
+</section>
+
+<section class="card game" id="gameCard">
+
+    <div class="stats">
+
+        <div class="stat">
+            <small>Tentativas</small>
+            <strong id="tries">0/8</strong>
+        </div>
+
+        <div class="stat">
+            <small>Tempo</small>
+            <strong id="timer">--:--</strong>
+        </div>
+
+        <div class="stat">
+            <small>Recorde</small>
+            <strong id="best">—</strong>
+        </div>
+
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+
+        <span class="label">
+            O código tem <b id="digitCount">4</b> dígitos diferentes
+        </span>
+
+        <div class="secret" id="secretSlots"></div>
+
+    </div>
+
+    <label class="label">Introduz a tua tentativa</label>
+
+    <div class="row">
+
+        <input
+            id="guess"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Ex.: 5831"
+        >
+
+        <button class="primary" id="tryBtn">
+            VERIFICAR
+        </button>
+
+    </div>
+
+    <div class="feedback" id="feedback">
+        Cada tentativa revela quantos dígitos estão certos.
+    </div>
+
+    <div class="legend">
+        <span><i class="dot green"></i>Posição certa</span>
+        <span><i class="dot yellow"></i>Dígito certo, posição errada</span>
+        <span>🔴 Dígito inexistente</span>
+    </div>
+
+    <h3 style="font-size:15px;margin-top:22px">
+        Histórico de tentativas
+    </h3>
+
+    <div class="history" id="history">
+        <p class="subtitle">Ainda não fizeste nenhuma tentativa.</p>
+    </div>
+
+</section>
+
+<section class="card hidden" id="endCard">
+
+    <div class="message">
+
+        <div id="endIcon" style="font-size:42px">🏆</div>
+
+        <h2 id="endTitle">Desafio concluído!</h2>
+
+        <p id="endText"></p>
+
+        <p id="endScore" style="font-size:22px;color:#9fc4ff;font-weight:800"></p>
+
+        <p id="reveal"></p>
+
+        <button class="primary" id="againBtn" style="width:100%;margin-top:15px">
+            JOGAR NOVAMENTE
+        </button>
+
+    </div>
+
+</section>
+
+<footer>
+    O recorde fica guardado neste dispositivo e navegador.
+</footer>
+
+</div>
+
+<script>
+
+// CONFIGURAÇÕES DOS NÍVEIS
+
+const levels = {
+    easy: {
+        digits: 3,
+        attempts: 10,
+        points: 100
+    },
+
+    medium: {
+        digits: 4,
+        attempts: 8,
+        points: 200
+    },
+
+    hard: {
+        digits: 5,
+        attempts: 7,
+        points: 300
+    }
+};
+
+
+// VARIÁVEIS DO JOGO
+
+let secret = "";
+let attempts = 0;
+let maxAttempts = 8;
+let pointsBase = 200;
+
+let secondsLeft = 0;
+let timerId = null;
+let active = false;
+let startedAt = 0;
+
+
+// ELEMENTOS HTML
+
+const $ = id => document.getElementById(id);
+
+
+// GERAR CÓDIGO ALEATÓRIO
+
+function makeSecret(length) {
+
+    const digits = [..."0123456789"];
+
+    for (let i = digits.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [digits[i], digits[j]] = [digits[j], digits[i]];
+
+    }
+
+    if (digits[0] === "0") {
+        [digits[0], digits[1]] = [digits[1], digits[0]];
+    }
+
+    return digits.slice(0, length).join("");
+
+}
+
+
+// FORMATAR TEMPO
+
+function formatTime(s) {
+
+    const minutes = String(Math.floor(s / 60)).padStart(2, "0");
+
+    const seconds = String(s % 60).padStart(2, "0");
+
+    return minutes + ":" + seconds;
+
+}
+
+
+// ATUALIZAR RECORDE
+
+function updateBest() {
+
+    const best = Number(localStorage.getItem("codigoSecretoRecorde") || 0);
+
+    $("best").textContent = best ? best : "—";
+
+}
+
+
+// INICIAR JOGO
+
+function startGame() {
+
+    clearInterval(timerId);
+
+    const level = levels[$("difficulty").value];
+
+    secret = makeSecret(level.digits);
+
+    attempts = 0;
+
+    maxAttempts = level.attempts;
+
+    pointsBase = level.points;
+
+    active = true;
+
+    secondsLeft = Number($("timerMode").value);
+
+    startedAt = Date.now();
+
+
+    $("setupCard").classList.add("hidden");
+
+    $("endCard").classList.add("hidden");
+
+    $("gameCard").classList.add("active");
+
+
+    $("digitCount").textContent = level.digits;
+
+    $("tries").textContent = `0/${maxAttempts}`;
+
+    $("timer").textContent = secondsLeft ? formatTime(secondsLeft) : "∞";
+
+
+    $("secretSlots").innerHTML = Array.from(
+        {length: level.digits},
+        () => "<span>?</span>"
+    ).join("");
+
+
+    $("guess").value = "";
+
+    $("guess").maxLength = level.digits;
+
+    $("guess").placeholder = "Código de " + level.digits + " dígitos";
+
+
+    $("feedback").textContent = "Código gerado. Analisa as pistas.";
+
+    $("history").innerHTML =
+        '<p class="subtitle">Ainda não fizeste nenhuma tentativa.</p>';
+
+
+    $("tryBtn").disabled = false;
+
+    $("guess").disabled = false;
+
+
+    updateBest();
+
+    $("guess").focus();
+
+
+    // CRONÓMETRO
+
+    if (secondsLeft > 0) {
+
+        timerId = setInterval(() => {
+
+            secondsLeft--;
+
+            $("timer").textContent = formatTime(secondsLeft);
+
+            if (secondsLeft <= 0) {
+
+                endGame(false, "O tempo terminou.");
+
+            }
+
+        }, 1000);
+
+    }
+
+}
+
+
+// ANALISAR TENTATIVA
+
+function evaluate(guess) {
+
+    let exact = 0;
+
+    let misplaced = 0;
+
+
+    for (let i = 0; i < guess.length; i++) {
+
+        if (guess[i] === secret[i]) {
+
+            exact++;
+
+        } else if (secret.includes(guess[i])) {
+
+            misplaced++;
+
+        }
+
+    }
+
+
+    return {
+        exact,
+        misplaced,
+        absent: guess.length - exact - misplaced
+    };
+
+}
+
+
+// VERIFICAR RESPOSTA
+
+function submitGuess() {
+
+    if (!active) return;
+
+
+    const guess = $("guess").value.trim();
+
+    const length = secret.length;
+
+
+    // VALIDAR QUANTIDADE DE DÍGITOS
+
+    if (!new RegExp("^\\d{" + length + "}$").test(guess)) {
+
+        $("feedback").textContent =
+            `Introduz exatamente ${length} dígitos.`;
+
+        return;
+
+    }
+
+
+    // IMPEDIR NÚMEROS REPETIDOS
+
+    if (new Set(guess).size !== length) {
+
+        $("feedback").textContent =
+            "Não repitas dígitos na mesma tentativa.";
+
+        return;
+
+    }
+
+
+    attempts++;
+
+
+    const result = evaluate(guess);
+
+
+    $("tries").textContent = `${attempts}/${maxAttempts}`;
+
+
+    // CRIAR REGISTO DA TENTATIVA
+
+    const row = document.createElement("div");
+
+    row.className = "attempt";
+
+
+    const number = document.createElement("span");
+
+    number.className = "numbers";
+
+    number.textContent = guess;
+
+
+    const clues = document.createElement("div");
+
+    clues.className = "clues";
+
+
+    if (result.exact) {
+
+        clues.innerHTML +=
+            `<span class="clue g">🟢 ${result.exact} posição(ões) certa(s)</span>`;
+
+    }
+
+
+    if (result.misplaced) {
+
+        clues.innerHTML +=
+            `<span class="clue y">🟡 ${result.misplaced} deslocado(s)</span>`;
+
+    }
+
+
+    if (result.absent) {
+
+        clues.innerHTML +=
+            `<span class="clue">🔴 ${result.absent} inexistente(s)</span>`;
+
+    }
+
+
+    row.append(number, clues);
+
+
+    if (attempts === 1) {
+
+        $("history").innerHTML = "";
+
+    }
+
+
+    $("history").prepend(row);
+
+
+    $("guess").value = "";
+
+
+    // VERIFICAR VITÓRIA
+
+    if (result.exact === length) {
+
+        endGame(true, "Descobriste o código secreto!");
+
+    }
+
+    // VERIFICAR DERROTA
+
+    else if (attempts >= maxAttempts) {
+
+        endGame(false, "Esgotaste todas as tentativas.");
+
+    }
+
+    else {
+
+        $("feedback").textContent =
+            `${result.exact} na posição certa, ` +
+            `${result.misplaced} deslocado(s) e ` +
+            `${result.absent} inexistente(s).`;
+
+        $("guess").focus();
+
+    }
+
+}
+
+
+// FINALIZAR JOGO
+
+function endGame(won, reason) {
+
+    if (!active) return;
+
+    active = false;
+
+    clearInterval(timerId);
+
+
+    const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+
+
+    const score = won
+        ? Math.max(
+            10,
+            pointsBase - (attempts - 1) * 15 + Math.max(0, 60 - elapsed)
+          )
+        : 0;
+
+
+    $("gameCard").classList.remove("active");
+
+    $("endCard").classList.remove("hidden");
+
+
+    $("endIcon").textContent = won ? "🏆" : "🔓";
+
+    $("endTitle").textContent =
+        won ? "Código desbloqueado!" : "Fim do desafio";
+
+
+    $("endText").textContent = reason;
+
+
+    $("endScore").textContent =
+        won ? `Pontuação: ${score} pontos` : "Pontuação: 0 pontos";
+
+
+    $("reveal").textContent =
+        `O código secreto era: ${secret}`;
+
+
+    // GUARDAR RECORDE
+
+    if (won) {
+
+        const best = Number(
+            localStorage.getItem("codigoSecretoRecorde") || 0
+        );
+
+        if (score > best) {
+
+            localStorage.setItem(
+                "codigoSecretoRecorde",
+                String(score)
+            );
+
+        }
+
+    }
+
+
+    $("tryBtn").disabled = true;
+
+    $("guess").disabled = true;
+
+}
+
+
+// EVENTOS DOS BOTÕES
+
+$("startBtn").addEventListener("click", startGame);
+
+$("tryBtn").addEventListener("click", submitGuess);
+
+
+$("againBtn").addEventListener("click", () => {
+
+    $("endCard").classList.add("hidden");
+
+    $("setupCard").classList.remove("hidden");
+
+    $("gameCard").classList.remove("active");
+
+});
+
+
+// PERMITIR ENTER PARA VERIFICAR
+
+$("guess").addEventListener("keydown", e => {
+
+    if (e.key === "Enter") {
+
+        submitGuess();
+
+    }
+
+});
+
+
+updateBest();
+
+</script>
+
+</body>
+</html>
